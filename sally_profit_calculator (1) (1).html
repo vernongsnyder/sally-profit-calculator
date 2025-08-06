@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sally's Profit Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .section {
+      flex: 1 1 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      min-width: 360px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      margin-left: 10px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .output {
+      font-weight: bold;
+      margin: 8px 0;
+    }
+    .important {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      border: 1px solid #ffeeba;
+      border-radius: 6px;
+    }
+    .highlight {
+      background: #e8f5e9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sally's Profit Calculator</h1>
+  <div class="container">
+    <div class="section">
+      <h2>Inputs</h2>
+      <div class="input-group">
+        <label>Fabric Cost</label>
+        <input type="range" id="fabricRange" min="0" max="100" value="20">
+        <input type="number" id="fabric" value="20">
+      </div>
+      <div class="input-group">
+        <label>Manufacturing Cost</label>
+        <input type="range" id="manufacturingRange" min="0" max="100" value="40">
+        <input type="number" id="manufacturing" value="40">
+      </div>
+      <div class="input-group">
+        <label>Shipping to Sally</label>
+        <input type="range" id="shippingRange" min="0" max="100" value="10">
+        <input type="number" id="shipping" value="10">
+      </div>
+      <div class="input-group">
+        <label>Monthly Overhead</label>
+        <input type="range" id="overheadRange" min="0" max="5000" value="800">
+        <input type="number" id="overhead" value="800">
+      </div>
+      <div class="input-group">
+        <label>Sale Price</label>
+        <input type="range" id="priceRange" min="0" max="1000" value="300">
+        <input type="number" id="price" value="300">
+      </div>
+      <div class="input-group">
+        <label>Units Sold</label>
+        <input type="range" id="quantityRange" min="1" max="100" value="10">
+        <input type="number" id="quantity" value="10">
+      </div>
+    </div>
+    <div class="section">
+      <h2>Outputs</h2>
+      <div class="output" id="grossSales"></div>
+      <div class="output" id="totalFabric"></div>
+      <div class="output" id="totalManufacturing"></div>
+      <div class="output" id="totalShipping"></div>
+      <div class="output" id="totalOverhead"></div>
+      <div class="output" id="overheadPerUnit"></div>
+      <div class="output" id="totalCost"></div>
+      <div class="output important" id="totalCostPerUnit"></div>
+      <div class="output important" id="netProfit"></div>
+      <div class="output important" id="netPerUnit"></div>
+      <div class="highlight">
+        <div id="keyInsight"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Made by Vernon</div>
+  <script>
+    const inputs = ['fabric', 'manufacturing', 'shipping', 'overhead', 'price', 'quantity'];
+    function syncRangeAndInput(id) {
+      const range = document.getElementById(id + 'Range');
+      const number = document.getElementById(id);
+      range.addEventListener('input', () => {
+        number.value = range.value;
+        calculate();
+      });
+      number.addEventListener('input', () => {
+        range.value = number.value;
+        calculate();
+      });
+    }
+    function calculate() {
+      const fabric = parseFloat(document.getElementById('fabric').value);
+      const manufacturing = parseFloat(document.getElementById('manufacturing').value);
+      const shipping = parseFloat(document.getElementById('shipping').value);
+      const overhead = parseFloat(document.getElementById('overhead').value);
+      const price = parseFloat(document.getElementById('price').value);
+      const quantity = parseFloat(document.getElementById('quantity').value);
+      const grossSales = price * quantity;
+      const totalFabric = fabric * quantity;
+      const totalManufacturing = manufacturing * quantity;
+      const totalShipping = shipping * quantity;
+      const overheadPerUnit = overhead / quantity;
+      const totalCost = totalFabric + totalManufacturing + totalShipping + overhead;
+      const totalCostPerUnit = totalCost / quantity;
+      const netProfit = grossSales - totalCost;
+      const netPerUnit = netProfit / quantity;
+      document.getElementById('grossSales').textContent = `Gross Sales: $${grossSales.toFixed(2)}`;
+      document.getElementById('totalFabric').textContent = `Total Fabric Cost: $${totalFabric.toFixed(2)}`;
+      document.getElementById('totalManufacturing').textContent = `Total Manufacturing Cost: $${totalManufacturing.toFixed(2)}`;
+      document.getElementById('totalShipping').textContent = `Total Shipping Cost: $${totalShipping.toFixed(2)}`;
+      document.getElementById('totalOverhead').textContent = `Monthly Overhead: $${overhead.toFixed(2)}`;
+      document.getElementById('overheadPerUnit').textContent = `Overhead per Unit: $${overheadPerUnit.toFixed(2)}`;
+      document.getElementById('totalCost').textContent = `Total Costs: $${totalCost.toFixed(2)}`;
+      document.getElementById('totalCostPerUnit').textContent = `Total Cost per Unit: $${totalCostPerUnit.toFixed(2)}`;
+      document.getElementById('netProfit').textContent = `Net Profit: $${netProfit.toFixed(2)}`;
+      document.getElementById('netPerUnit').textContent = `Net Profit per Unit: $${netPerUnit.toFixed(2)}`;
+      document.getElementById('keyInsight').textContent = `📌 Overhead drops to $${overheadPerUnit.toFixed(2)} per unit when ${quantity} garments are sold.`;
+    }
+    inputs.forEach(id => syncRangeAndInput(id));
+    calculate();
+  </script>
+</body>
+</html>
